@@ -100,6 +100,8 @@ def main(hookurl):
             "short": False
         }]
     else:
+        # clear event triggered
+        color = "good" #green
         message = "CLEAR: " + message
         summary = "CLEAR: " + summary
         fields = [{
