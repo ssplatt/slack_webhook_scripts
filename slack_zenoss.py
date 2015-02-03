@@ -106,7 +106,7 @@ def main(hookurl):
         summary = "CLEAR: " + summary
         fields = [{
             "title": "Actions",
-            "value": "Cleared by:" + cleared_by + "\n<" + reopen_url + "|Reopen>",
+            "value": "Cleared by: " + cleared_by + "\n<" + reopen_url + "|Reopen>",
             "short": False
         }]
         
