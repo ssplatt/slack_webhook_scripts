@@ -12,11 +12,8 @@ clear command: /usr/local/bin/slack_zenoss.py --device=${evt/device} --component
 
 import json, httplib2, sys, getopt
 
-## User vars
-# webhook url from slack
+# personal webhook url from slack
 hookurl = "https://hooks.slack.com/services/***/***/***"
-# bot username
-username = "zenoss-bot"
 
 ##
 ########################################################
@@ -37,7 +34,10 @@ def usage():
     --dev_events_url    link to show all events for device: dev_events_url=${urls/eventsUrl}\n\
     --repopen_url       link to reopen closed event: reopen_url=${urls/reopenUrl}"
 
-def main(username, hookurl):
+def main(hookurl):
+    # bot username
+    username = "zenoss-bot"
+    
     try:
         opts, args = getopt.getopt(sys.argv[1:], "", ["device=","component=","severity=","message=","summary=","cleared_by=","detail_url=","ack_url=","close_url=","dev_events_url=","reopen_url="])
     except getopt.GetoptError as err:
@@ -45,6 +45,7 @@ def main(username, hookurl):
         usage()
         sys.exit(2)
         
+    # parse command line input    
     for o, a in opts:
         if o == "--help":
             usage()
@@ -75,31 +76,44 @@ def main(username, hookurl):
             assert False, "unhandled option"
 
     # setup the output
-    attachment = {}
-    attachment['fallback'] = summary
-    attachment['text'] = message
-    attachment['title'] = summary
-    attachment['title_link'] = detail_url
-
     # set the color based on severity
     if severity == 5:
-        attachment['color'] = 'danger'
+        color = "danger"
     elif severity == 4:
-        attachment['color'] = '#FF9B01'
+        color = "#FF9B01"
     elif severity == 3:
-        attachment['color'] = 'warning'
+        color = "warning"
     elif severity == 2:
-        attachment['color'] = '#0372B8'
+        color = "#0372B8"
     elif severity == 1:
-        attachment['color'] = '#757575'
+        color = "#757575"
     elif severity == 0:
-        attachment['color'] = 'good'
-    
-    payload = { "username": username, "attachments": attachment }
+        color = "good"
+    else:
+        color = ""
+        
+    text = message
+    attachment = [{
+        "fallback": summary,
+        "text": text,
+        "title": summary,
+        "title_link": detail_url,
+        "color": color
+    }]
+
     # post to slack
-    params = json.dumps(payload)
-    h = httplib2.Http(".cache")
-    (resp, content) = h.request(hookurl, "POST", body=params, headers={'content-type':'application/json'} )
+    payload = json.dumps({
+        "username": username,
+        "text": summary,
+        "attachments": attachment
+    })
+    
+    h = httplib2.Http()
+    (resp, content) = h.request(hookurl, "POST", body=payload, headers={'content-type':'application/json'} )
+    
+    if resp:
+        print resp
+        print content
     
 if __name__ == "__main__":
-    main(username, hookurl)
+    main(hookurl)
