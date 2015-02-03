@@ -14,7 +14,7 @@ import sys
 import getopt
 
 # personal webhook url from slack
-hookurl = "https://hooks.slack.com/services/***/***/***"
+hookurl = ""
 
 ##
 ########################################################
