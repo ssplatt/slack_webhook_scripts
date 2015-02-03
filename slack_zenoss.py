@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''
 Slack - Zenoss Integration WebHook
-An incoming webhook for Zenoss to push alerts to Slack.
+A Slack incoming webhook to show events from Zenoss.
 
 To use:
 command: /usr/local/bin/slack_zenoss.py --device=${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/messages} --summary=${evt/summary} --detail_url=${urls/eventUrl} --ack_url=${urls/ackUrl} --close_url=${urls/closeUrl} --dev_events_url=${urls/eventsUrl}
@@ -39,7 +39,7 @@ def usage():
 
 def main(username, hookurl):
     try:
-        opts, args = getopt.getopt(sys.argv[1:], ["device=","component=","severity=","message=","summary=","cleared_by=","detail_url=","ack_url=","close_url=","dev_events_url=","reopen_url="])
+        opts, args = getopt.getopt(sys.argv[1:], "", ["device=","component=","severity=","message=","summary=","cleared_by=","detail_url=","ack_url=","close_url=","dev_events_url=","reopen_url="])
     except getopt.GetoptError as err:
         print str(err) # will print something like "option -a not recognized"
         usage()
