@@ -8,7 +8,7 @@ To use:
 * set the name of the bot, i.e. Zenoss-bot
 * set a custom icon, i.e. search for one you like and upload it.
 * copy the WebHook URL
-* save slac_zenoss.py to /usr/local/bin on your Zenoss server
+* save slack_zenoss.py to /usr/local/bin on your Zenoss server
 * ```chmod 755 /usr/local/bin/slack_zenoss.py```
 * Use your favorite editor to paste your WebHook URL in the hookurl="" variable in slack_zenoss.py
 * back in Zenoss, click Events then Triggers
