@@ -4,9 +4,11 @@ Slack - Zenoss Integration WebHook
 A Slack incoming webhook to show events from Zenoss.
 
 To use:
-command: /usr/local/bin/slack_zenoss.py --device="${evt/device}" --component="${evt/component}" --severity="${evt/severity}" --message="${evt/message}" --summary="${evt/summary}" --detail_url="${urls/eventUrl}" --ack_url="${urls/ackUrl}" --close_url="${urls/closeUrl}" --dev_events_url="${urls/eventsUrl}"
+command: /usr/local/bin/slack_zenoss.py --device=${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/message} --summary=${evt/summary} --detail_url='${urls/eventUrl}' --ack_url='${urls/ackUrl}' --close_url='${urls/closeUrl}' --dev_events_url='${urls/eventsUrl}'
 
-clear command: /usr/local/bin/slack_zenoss.py --device="${evt/device}" --component="${evt/component}" --severity="${evt/severity}" --message="${evt/message}" --summary="${evt/summary}" --cleared_by="${evt/clearid}" --dev_events_url="${urls/eventsUrl}" --reopen_url="${urls/reopenUrl}"
+clear command: /usr/local/bin/slack_zenoss.py --device=${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/message} --summary=${evt/summary} --cleared_by=${evt/clearid} --dev_events_url='${urls/eventsUrl}' --reopen_url='${urls/reopenUrl}'
+
+only some of the Event Expressions are used in this script at the moment. For a full list of expressions, see http://community.zenoss.org/docs/DOC-12029
 '''
 
 import json
@@ -23,30 +25,29 @@ hookurl = "https://hooks.slack.com/services/***/***/***"
 def usage():
     print "slack_zenoss.py <options>\n\
     \n\
-    --help              prints this usage information\n\
-    --device            event device: device=${evt/device}\n\
-    --component         event component: component=${evt/component}\n\
-    --severity          event severity: severity=${evt/severity}\n\
-    --message           event message: message=${evt/message}\n\
-    --summary           event summary: summary= {evt/summary}\n\
-    --clear_id          event cleared by: cleared_by=${evt/clearid}\n\
-    --detail_url        link to event details: detail_url=${urls/eventUrl}\n\
-    --ack_url           link to acknowledge event: ack_url=${urls/ackUrl}\n\
-    --close_url         link to close event: close_url=${urls/closeUrl}\n\
-    --dev_events_url    link to show all events for device: dev_events_url=${urls/eventsUrl}\n\
-    --repopen_url       link to reopen closed event: reopen_url=${urls/reopenUrl}"
+    --help=              prints this usage information\n\
+    --device=            event device: device=${evt/device}\n\
+    --component=         event component: component=${evt/component}\n\
+    --severity=          event severity: severity=${evt/severity}\n\
+    --message=           event message: message=${evt/message}\n\
+    --summary=           event summary: summary= {evt/summary}\n\
+    --clear_id=          event cleared by: cleared_by=${evt/clearid}\n\
+    --detail_url=        link to event details: detail_url=${urls/eventUrl}\n\
+    --ack_url=           link to acknowledge event: ack_url=${urls/ackUrl}\n\
+    --close_url=         link to close event: close_url=${urls/closeUrl}\n\
+    --dev_events_url=    link to show all events for device: dev_events_url=${urls/eventsUrl}\n\
+    --repopen_url=       link to reopen closed event: reopen_url=${urls/reopenUrl}"
 
 def main(hookurl):
-    # bot username
-    username = "zenoss-bot"
-    
     try:
         opts, args = getopt.getopt(sys.argv[1:], "", ["device=","component=","severity=","message=","summary=","cleared_by=","detail_url=","ack_url=","close_url=","dev_events_url=","reopen_url="])
     except getopt.GetoptError as err:
         print str(err) # will print something like "option -a not recognized"
         usage()
         sys.exit(2)
-        
+    
+    print opts    
+    
     # parse command line input    
     for o, a in opts:
         if o == "--help":
@@ -104,7 +105,7 @@ def main(hookurl):
     else:
         fields = [{
             "title": "Actions",
-            "value": "<" + ack_url + "|Acknowledge>\n<" + close_url + "|Close>",
+            "value": "<" + ack_url + "|Acknowledge>\n<" + close_url + "|Close>\n<" + dev_events_url + "|View Device Events>",
             "short": False
         }]
         
@@ -119,7 +120,6 @@ def main(hookurl):
 
     # post to slack
     payload = json.dumps({
-        "username": username,
         "attachments": attachment
     })
     
