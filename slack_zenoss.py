@@ -4,9 +4,9 @@ Slack - Zenoss Integration WebHook
 An incoming webhook for Zenoss to push alerts to Slack.
 
 To use:
-command: /usr/local/bin/slack-zenoss.py --device= ${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/messages} --summary=${evt/summary} --detail_url=${urls/eventUrl} --ack_url=${urls/ackUrl} --close_url=${urls/closeUrl} --dev_events_url=${urls/eventsUrl}
+command: /usr/local/bin/slack_zenoss.py --device= ${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/messages} --summary=${evt/summary} --detail_url=${urls/eventUrl} --ack_url=${urls/ackUrl} --close_url=${urls/closeUrl} --dev_events_url=${urls/eventsUrl}
 
-clear command: /usr/local/bin/slack-zenoss.py --device= ${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/messages} --summary=${evt/summary} --cleared_by=${evt/clearid} --dev_events_url=${urls/eventsUrl} --reopen_url=${urls/reopenUrl}
+clear command: /usr/local/bin/slack_zenoss.py --device= ${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/messages} --summary=${evt/summary} --cleared_by=${evt/clearid} --dev_events_url=${urls/eventsUrl} --reopen_url=${urls/reopenUrl}
 '''
 
 
