@@ -4,13 +4,15 @@ Slack - Zenoss Integration WebHook
 A Slack incoming webhook to show events from Zenoss.
 
 To use:
-command: /usr/local/bin/slack_zenoss.py --device=${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/messages} --summary=${evt/summary} --detail_url=${urls/eventUrl} --ack_url=${urls/ackUrl} --close_url=${urls/closeUrl} --dev_events_url=${urls/eventsUrl}
+command: /usr/local/bin/slack_zenoss.py --device="${evt/device}" --component="${evt/component}" --severity="${evt/severity}" --message="${evt/message}" --summary="${evt/summary}" --detail_url="${urls/eventUrl}" --ack_url="${urls/ackUrl}" --close_url="${urls/closeUrl}" --dev_events_url="${urls/eventsUrl}"
 
-clear command: /usr/local/bin/slack_zenoss.py --device=${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/messages} --summary=${evt/summary} --cleared_by=${evt/clearid} --dev_events_url=${urls/eventsUrl} --reopen_url=${urls/reopenUrl}
+clear command: /usr/local/bin/slack_zenoss.py --device="${evt/device}" --component="${evt/component}" --severity="${evt/severity}" --message="${evt/message}" --summary="${evt/summary}" --cleared_by="${evt/clearid}" --dev_events_url="${urls/eventsUrl}" --reopen_url="${urls/reopenUrl}"
 '''
 
-
-import json, httplib2, sys, getopt
+import json
+import httplib2
+import sys
+import getopt
 
 # personal webhook url from slack
 hookurl = "https://hooks.slack.com/services/***/***/***"
@@ -25,7 +27,7 @@ def usage():
     --device            event device: device=${evt/device}\n\
     --component         event component: component=${evt/component}\n\
     --severity          event severity: severity=${evt/severity}\n\
-    --message           event message: message=${evt/messages}\n\
+    --message           event message: message=${evt/message}\n\
     --summary           event summary: summary= {evt/summary}\n\
     --clear_id          event cleared by: cleared_by=${evt/clearid}\n\
     --detail_url        link to event details: detail_url=${urls/eventUrl}\n\
@@ -77,43 +79,52 @@ def main(hookurl):
 
     # setup the output
     # set the color based on severity
-    if severity == 5:
-        color = "danger"
-    elif severity == 4:
-        color = "#FF9B01"
-    elif severity == 3:
-        color = "warning"
-    elif severity == 2:
-        color = "#0372B8"
-    elif severity == 1:
-        color = "#757575"
-    elif severity == 0:
-        color = "good"
+    if severity == "5":
+        color = "danger" #red
+    elif severity == "4":
+        color = "#FF9B01" #orange
+    elif severity == "3":
+        color = "FFEA00" #yellow
+    elif severity == "2":
+        color = "#0372B8" #blue
+    elif severity == "1":
+        color = "#757575" #gray
+    elif severity == "0":
+        color = "good" #green
     else:
         color = ""
+    
+    # extra actions
+    if severity == "0":
+        fields = [{
+            "title": "Actions",
+            "value": "Cleared by:" + cleared_by + "\n<" + reopen_url + "|Reopen>",
+            "short": False
+        }]
+    else:
+        fields = [{
+            "title": "Actions",
+            "value": "<" + ack_url + "|Acknowledge>\n<" + close_url + "|Close>",
+            "short": False
+        }]
         
-    text = message
     attachment = [{
         "fallback": summary,
-        "text": text,
+        "text": device + " - " + message,
         "title": summary,
         "title_link": detail_url,
-        "color": color
+        "color": color,
+        "fields": fields
     }]
 
     # post to slack
     payload = json.dumps({
         "username": username,
-        "text": summary,
         "attachments": attachment
     })
     
     h = httplib2.Http()
     (resp, content) = h.request(hookurl, "POST", body=payload, headers={'content-type':'application/json'} )
-    
-    if resp:
-        print resp
-        print content
     
 if __name__ == "__main__":
     main(hookurl)
