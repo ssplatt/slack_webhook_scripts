@@ -18,6 +18,7 @@ hookurl = "https://hooks.slack.com/services/***/***/***"
 # bot username
 username = "zenoss-bot"
 
+##
 ########################################################
 ## only change below here if you know what you are doing
 def usage():
@@ -36,7 +37,7 @@ def usage():
     --dev_events_url    link to show all events for device: dev_events_url=${urls/eventsUrl}\n\
     --repopen_url       link to reopen closed event: reopen_url=${urls/reopenUrl}"
 
-def main():
+def main(username, hookurl):
     try:
         opts, args = getopt.getopt(sys.argv[1:], ["device=","component=","severity=","message=","summary=","cleared_by=","detail_url=","ack_url=","close_url=","dev_events_url=","reopen_url="])
     except getopt.GetoptError:
@@ -97,7 +98,7 @@ def main():
     payload = { "username": username, "attachments": attachment }
     # post to slack
     params = json.dumps(payload)
-    conn = httplib.HTTPConnection(url)
+    conn = httplib.HTTPConnection(hookurl)
     conn.request("POST", params)
     
 if __name__ == "__main__":
