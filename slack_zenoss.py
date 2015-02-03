@@ -10,7 +10,7 @@ clear command: /usr/local/bin/slack_zenoss.py --device=${evt/device} --component
 '''
 
 
-import json, httplib, sys, getopt
+import json, httplib2, sys, getopt
 
 ## User vars
 # webhook url from slack
@@ -98,8 +98,8 @@ def main(username, hookurl):
     payload = { "username": username, "attachments": attachment }
     # post to slack
     params = json.dumps(payload)
-    conn = httplib.HTTPConnection(hookurl)
-    conn.request("POST", params)
+    h = httplib2.Http(".cache")
+    (resp, content) = h.request(hookurl, "POST", body=params, headers={'content-type':'application/json'} )
     
 if __name__ == "__main__":
     main(username, hookurl)
