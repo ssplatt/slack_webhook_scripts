@@ -3,12 +3,9 @@
 Slack - Zenoss Integration WebHook
 A Slack incoming webhook to show events from Zenoss.
 
-To use:
-command: /usr/local/bin/slack_zenoss.py --device='${evt/device}' --component='${evt/component}' --severity='${evt/severity}' --message='${evt/message}' --summary='${evt/summary}' --detail_url='${urls/eventUrl}' --ack_url='${urls/ackUrl}' --close_url='${urls/closeUrl}' --dev_events_url='${urls/eventsUrl}'
+Usage: slack_zenoss.py <options>
 
-clear command: /usr/local/bin/slack_zenoss.py --device='${evt/device}' --component='${evt/component}' --severity='${evt/severity}' --message='${evt/message}' --summary=${evt/summary} --detail_url='${urls/eventUrl}' --cleared_by='${evt/clearid}' --dev_events_url='${urls/eventsUrl}' --reopen_url='${urls/reopenUrl}'
-
-only some of the Event Expressions are used in this script at the moment. For a full list of expressions, see http://community.zenoss.org/docs/DOC-12029
+See the README for more information
 '''
 
 import json
@@ -103,6 +100,8 @@ def main(hookurl):
             "short": False
         }]
     else:
+        message = "CLEAR: " + message
+        summary = "CLEAR: " + summary
         fields = [{
             "title": "Actions",
             "value": "Cleared by:" + cleared_by + "\n<" + reopen_url + "|Reopen>",
