@@ -40,7 +40,7 @@ def usage():
 def main(username, hookurl):
     try:
         opts, args = getopt.getopt(sys.argv[1:], ["device=","component=","severity=","message=","summary=","cleared_by=","detail_url=","ack_url=","close_url=","dev_events_url=","reopen_url="])
-    except getopt.GetoptError:
+    except getopt.GetoptError as err:
         print str(err) # will print something like "option -a not recognized"
         usage()
         sys.exit(2)
