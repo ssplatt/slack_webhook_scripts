@@ -94,16 +94,18 @@ def main(hookurl):
         color = ""
     
     # extra actions
-    if severity == "0":
+    try:
+        cleared_by
+    except:
         fields = [{
             "title": "Actions",
-            "value": "Cleared by:" + cleared_by + "\n<" + reopen_url + "|Reopen>",
+            "value": "<" + ack_url + "|Acknowledge>\n<" + close_url + "|Close>\n<" + dev_events_url + "|View Device Events>",
             "short": False
         }]
     else:
         fields = [{
             "title": "Actions",
-            "value": "<" + ack_url + "|Acknowledge>\n<" + close_url + "|Close>\n<" + dev_events_url + "|View Device Events>",
+            "value": "Cleared by:" + cleared_by + "\n<" + reopen_url + "|Reopen>",
             "short": False
         }]
         
