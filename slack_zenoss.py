@@ -4,9 +4,9 @@ Slack - Zenoss Integration WebHook
 A Slack incoming webhook to show events from Zenoss.
 
 To use:
-command: /usr/local/bin/slack_zenoss.py --device=${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/message} --summary=${evt/summary} --detail_url='${urls/eventUrl}' --ack_url='${urls/ackUrl}' --close_url='${urls/closeUrl}' --dev_events_url='${urls/eventsUrl}'
+command: /usr/local/bin/slack_zenoss.py --device='${evt/device}' --component='${evt/component}' --severity='${evt/severity}' --message='${evt/message}' --summary='${evt/summary}' --detail_url='${urls/eventUrl}' --ack_url='${urls/ackUrl}' --close_url='${urls/closeUrl}' --dev_events_url='${urls/eventsUrl}'
 
-clear command: /usr/local/bin/slack_zenoss.py --device=${evt/device} --component=${evt/component} --severity=${evt/severity} --message=${evt/message} --summary=${evt/summary} --cleared_by=${evt/clearid} --dev_events_url='${urls/eventsUrl}' --reopen_url='${urls/reopenUrl}'
+clear command: /usr/local/bin/slack_zenoss.py --device='${evt/device}' --component='${evt/component}' --severity='${evt/severity}' --message='${evt/message}' --summary=${evt/summary} --detail_url='${urls/eventUrl}' --cleared_by='${evt/clearid}' --dev_events_url='${urls/eventsUrl}' --reopen_url='${urls/reopenUrl}'
 
 only some of the Event Expressions are used in this script at the moment. For a full list of expressions, see http://community.zenoss.org/docs/DOC-12029
 '''
@@ -44,9 +44,7 @@ def main(hookurl):
     except getopt.GetoptError as err:
         print str(err) # will print something like "option -a not recognized"
         usage()
-        sys.exit(2)
-    
-    print opts    
+        sys.exit(2) 
     
     # parse command line input    
     for o, a in opts:
@@ -111,8 +109,8 @@ def main(hookurl):
         
     attachment = [{
         "fallback": summary,
-        "text": device + " - " + message,
-        "title": summary,
+        "text": message,
+        "title": device + ": " + summary,
         "title_link": detail_url,
         "color": color,
         "fields": fields
